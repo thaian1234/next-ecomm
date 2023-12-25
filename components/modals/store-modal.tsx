@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
+import { useCreateStore } from "@/features/stores/use-create-stores";
 
 const formSchema = z.object({
 	name: z.string().min(1),
@@ -25,8 +26,8 @@ const formSchema = z.object({
 
 export const StoreModal = () => {
 	const storeModal = useStoreModal();
-
-	const [isLoading, setIsLoading] = useState(false);
+	const { createStore, isCreating: isLoading } = useCreateStore();
+	// const [isLoading, setIsLoading] = useState(false);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -36,18 +37,21 @@ export const StoreModal = () => {
 	});
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
-		console.log(values);
+		// try {
+		// 	setIsLoading(true);
+		// 	const resp = await axios.post("/api/stores", values);
 
-		try {
-			setIsLoading(true);
-			const resp = await axios.post("/api/stores", values);
-
-			window.location.assign(`/${resp.data.id}`);
-		} catch (error) {
-			toast.error("Something went wrong ❌");
-		} finally {
-			setIsLoading(false);
-		}
+		// 	window.location.assign(`/${resp.data.id}`);
+		// } catch (error) {
+		// 	toast.error("Something went wrong ❌");
+		// } finally {
+		// 	setIsLoading(false);
+		// }
+		createStore(values, {
+			onSuccess: ({ data }) => {
+				window.location.assign(`/${data.id}`);
+			},
+		});
 	};
 
 	return (
