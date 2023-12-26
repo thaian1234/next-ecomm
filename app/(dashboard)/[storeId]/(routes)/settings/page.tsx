@@ -1,9 +1,11 @@
-import React from "react";
+import React, { Suspense } from "react";
 
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import SettingsForm from "./components/settings-form";
+import { Skeleton } from "@/components/ui/skeleton";
+import SkeletonPage from "@/components/skeleton-page";
 
 interface SettingPageProps {
 	params: {

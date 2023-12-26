@@ -40,7 +40,6 @@ export default function SettingsForm({ initialData }: SettingsFormProps) {
 	const origin = useOrigin();
 	const { editStore, isEditing } = useEditStore();
 	const { deleteStore, isDeleting } = useDeleteStore();
-
 	const [open, setOpen] = useState(false);
 
 	const form = useForm<SettingsFormValues>({
