@@ -24,19 +24,21 @@ const formSchema = z.object({
 	name: z.string().min(1),
 });
 
+type StoreFormValues = z.infer<typeof formSchema>;
+
 export const StoreModal = () => {
 	const storeModal = useStoreModal();
 	const { createStore, isCreating: isLoading } = useCreateStore();
 	// const [isLoading, setIsLoading] = useState(false);
 
-	const form = useForm<z.infer<typeof formSchema>>({
+	const form = useForm<StoreFormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			name: "",
 		},
 	});
 
-	const onSubmit = async (values: z.infer<typeof formSchema>) => {
+	const onSubmit = async (values: StoreFormValues) => {
 		// try {
 		// 	setIsLoading(true);
 		// 	const resp = await axios.post("/api/stores", values);
@@ -62,7 +64,7 @@ export const StoreModal = () => {
 			onClose={storeModal.onClose}
 		>
 			<div>
-				<div className="space-y-4 py-2 pb-4">
+				<div className="py-2 pb-4 space-y-4">
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)}>
 							<FormField
@@ -83,7 +85,7 @@ export const StoreModal = () => {
 								)}
 							/>
 
-							<div className="pt-6 space-x-2 flex items-center justify-end w-full">
+							<div className="flex items-center justify-end w-full pt-6 space-x-2">
 								<Button
 									variant="outline"
 									onClick={storeModal.onClose}
