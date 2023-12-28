@@ -3,15 +3,13 @@ import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-export const useDeleteStore = () => {
+export const useDeleteBillboards = () => {
 	const routers = useRouter();
 	const params = useParams();
 
-	const { mutate: deleteStore, isPending: isDeleting } = useMutation({
+	const { mutate: deleteBillboards, isPending: isDeleting } = useMutation({
 		mutationFn: async () => {
-			return await axios.delete(
-				`/api/${params.storeId}/billboards/${params.billboardId}`
-			);
+			return await axios.delete(`/api/Billboardss/${params.BillboardsId}`);
 		},
 		onError: () => {
 			toast.error(
@@ -19,9 +17,11 @@ export const useDeleteStore = () => {
 			);
 		},
 		onSuccess: () => {
-			toast.success("Billborad deleted");
+			toast.success("Billboards deleted");
+			routers.push("/");
+			routers.refresh();
 		},
 	});
 
-	return { deleteStore, isDeleting };
+	return { deleteBillboards, isDeleting };
 };

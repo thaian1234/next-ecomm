@@ -27,6 +27,9 @@ import { useDeleteStore } from "@/features/stores/use-delete-stores";
 import ImageUpload from "@/components/ui/image-upload";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useCreateBillboards } from "@/features/billboards/use-create-billboards";
+import { useEditBillboards } from "@/features/billboards/use-edit-billboards";
+import { useDeleteBillboards } from "@/features/billboards/use-delete-store";
 
 const formSchema = z.object({
 	label: z.string().min(1),
@@ -43,8 +46,11 @@ export default function BillboardForm({ initialData }: BillboardFormProps) {
 	const params = useParams();
 	const router = useRouter();
 	const origin = useOrigin();
+	const { createBillboard, isCreating } = useCreateBillboards();
+	const { editBillboards, isEditing } = useEditBillboards();
+	const { deleteBillboards, isDeleting } = useDeleteBillboards();
 	const [open, setOpen] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
+	const isLoading = isCreating || isEditing || isDeleting;
 
 	const title = initialData ? "Edit billboard" : "Create billboard";
 	const description = initialData
@@ -63,42 +69,35 @@ export default function BillboardForm({ initialData }: BillboardFormProps) {
 		},
 	});
 
-	const onSubmit = async function (data: BillboardFormValues) {
-		try {
-			setIsLoading(true);
-			if (initialData) {
-				await axios.patch(
-					`/api/${params.storeId}/billboards/${params.billboardId}`,
-					data
-				);
-			} else {
-				await axios.post(`/api/${params.storeId}/billboards`, data);
-			}
-			router.refresh();
-			toast.success(toastMessage);
-		} catch (error) {
-			toast.error("Something went wrong");
-		} finally {
-			setIsLoading(false);
+	const onSubmit = function (data: BillboardFormValues) {
+		if (initialData) {
+			editBillboards(data);
+		} else {
+			createBillboard(data);
 		}
+		router.refresh();
+		router.push(`/${params.storeId}/billboards`);
+		toast.success(toastMessage);
 	};
 
 	const onDelete = async () => {
-		try {
-			setIsLoading(true);
-			await axios.delete(
-				`/api/${params.storeId}/billboards/${params.billboardId}`
-			);
-			router.refresh();
-			toast.success("Billborad deleted");
-		} catch (error) {
-			toast.error(
-				"Make sure you removed all categories using this billboard first"
-			);
-		} finally {
-			setIsLoading(false);
-			setOpen(true);
-		}
+		// try {
+		// 	setIsLoading(true);
+		// 	await axios.delete(
+		// 		`/api/${params.storeId}/billboards/${params.billboardId}`
+		// 	);
+		// 	router.refresh();
+		// 	toast.success("Billborad deleted");
+		// } catch (error) {
+		// 	toast.error(
+		// 		"Make sure you removed all categories using this billboard first"
+		// 	);
+		// } finally {
+		// 	setIsLoading(false);
+		// 	setOpen(true);
+		// }
+		deleteBillboards();
+		setOpen(true);
 	};
 
 	return (
