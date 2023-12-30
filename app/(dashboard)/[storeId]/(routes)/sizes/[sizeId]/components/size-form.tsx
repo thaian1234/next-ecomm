@@ -1,12 +1,13 @@
 "use client";
-import React, { Suspense, useState } from "react";
+import React, { useState } from "react";
 import * as z from "zod";
+import toast from "react-hot-toast";
+import AlertModal from "@/components/modals/alert-modal";
 
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
-import AlertModal from "@/components/modals/alert-modal";
-import { Billboard, Category } from "@prisma/client";
+import { Size } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,68 +20,67 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useParams, useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import { useCreateCategories } from "@/features/categories/use-create-categories";
-import { useEditCategories } from "@/features/categories/use-edit-categories";
-import { useDeleteCategories } from "@/features/categories/use-delete-categories";
+import { useParams } from "next/navigation";
+import { useCreateSizes } from "@/features/sizes/use-create-sizes";
+import { useEditSizes } from "@/features/sizes/use-edit-sizes";
+import { useDeleteSizes } from "@/features/sizes/use-delete-sizes";
 
 const formSchema = z.object({
 	name: z.string().min(1),
-	billboardId: z.string().min(1),
+	value: z.string().min(1),
 });
 
-type CategoryFormValues = z.infer<typeof formSchema>;
+type SizeFormValues = z.infer<typeof formSchema>;
 
-interface CategoryFormProps {
-	initialData: Category | null;
-	billboards: Billboard[];
+interface SizeFormProps {
+	initialData: Size | null;
 }
 
-export default function CategoryForm({
-	initialData,
-	billboards,
-}: CategoryFormProps) {
+export default function SizeForm({ initialData }: SizeFormProps) {
 	const params = useParams();
 	const [open, setOpen] = useState(false);
 
-	const { createCategory, isCreating } = useCreateCategories();
-	const { editCategories, isEditing } = useEditCategories();
-	const { deleteCategories, isDeleting } = useDeleteCategories();
+	const {
+		createSizes,
+		isCreating,
+		isSuccess: isSuccessCreated,
+	} = useCreateSizes();
+	const { editSizes, isEditing, isSuccess: isSuccessEdited } = useEditSizes();
+	const { deleteSizes, isDeleting } = useDeleteSizes();
 
 	const isLoading = isCreating || isEditing || isDeleting;
 
-	const title = initialData ? "Edit category" : "Create category";
-	const description = initialData ? "Edit a Category" : "Add a new Category";
-	const toastMessage = initialData ? "Category updated" : "Category created";
+	const title = initialData ? "Edit Size" : "Create Size";
+	const description = initialData ? "Edit a Size" : "Add a new Size";
+	const toastMessage = initialData ? "Size updated" : "Size created";
 	const action = initialData ? "Save changes" : "Create";
 
-	const form = useForm<CategoryFormValues>({
+	const form = useForm<SizeFormValues>({
 		resolver: zodResolver(formSchema),
 		defaultValues: initialData || {
 			name: "",
-			billboardId: "",
+			value: "",
 		},
 	});
 
-	const onSubmit = function (data: CategoryFormValues) {
+	const onSubmit = function (data: SizeFormValues) {
 		if (initialData) {
-			editCategories(data);
+			editSizes(data, {
+				onSuccess: () => {
+					toast.success(toastMessage);
+				},
+			});
 		} else {
-			createCategory(data);
+			createSizes(data, {
+				onSuccess: () => {
+					toast.success(toastMessage);
+				},
+			});
 		}
-		toast.success(toastMessage);
 	};
 
 	const onDelete = () => {
-		deleteCategories(params.categoryId as string);
+		deleteSizes(params.sizeId as string);
 		setOpen(true);
 	};
 
@@ -123,7 +123,7 @@ export default function CategoryForm({
 									<FormControl>
 										<Input
 											disabled={isLoading}
-											placeholder="Category name"
+											placeholder="Size name"
 											{...field}
 										/>
 									</FormControl>
@@ -133,38 +133,16 @@ export default function CategoryForm({
 						/>
 						<FormField
 							control={form.control}
-							name="billboardId"
+							name="value"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Billboard</FormLabel>
+									<FormLabel>Value</FormLabel>
 									<FormControl>
-										<Select
+										<Input
 											disabled={isLoading}
-											onValueChange={field.onChange}
-											defaultValue={field.value}
-										>
-											<FormControl>
-												<SelectTrigger>
-													<SelectValue
-														defaultValue={
-															field.value
-														}
-														placeholder="Select a billboard"
-													/>
-												</SelectTrigger>
-											</FormControl>
-
-											<SelectContent>
-												{billboards.map((billboard) => (
-													<SelectItem
-														key={billboard.id}
-														value={billboard.id}
-													>
-														{billboard.label}
-													</SelectItem>
-												))}
-											</SelectContent>
-										</Select>
+											placeholder="Size value"
+											{...field}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
