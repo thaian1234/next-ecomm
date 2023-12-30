@@ -4,14 +4,12 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 export const useDeleteStore = () => {
-	const routers = useRouter();
+	const router = useRouter();
 	const params = useParams();
 
 	const { mutate: deleteStore, isPending: isDeleting } = useMutation({
 		mutationFn: async () => {
-			return await axios.delete(
-				`/api/${params.storeId}/billboards/${params.billboardId}`
-			);
+			return await axios.delete(`/api/stores/${params.storeId}`);
 		},
 		onError: () => {
 			toast.error(
@@ -19,7 +17,9 @@ export const useDeleteStore = () => {
 			);
 		},
 		onSuccess: () => {
-			toast.success("Billborad deleted");
+			toast.success("Store deleted");
+			router.refresh();
+			router.push("/");
 		},
 	});
 

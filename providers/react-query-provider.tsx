@@ -2,18 +2,13 @@
 import { ReactNode, useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useIsClient } from "usehooks-ts";
 
 export default function ReactQueryProvider({
 	children,
 }: {
 	children: ReactNode;
 }) {
-	const [isMounted, setIsMounted] = useState(false);
-
-	useEffect(() => {
-		setIsMounted(true);
-	}, []);
-
 	const [queryClient] = useState(
 		() =>
 			new QueryClient({
@@ -27,7 +22,9 @@ export default function ReactQueryProvider({
 			})
 	);
 
-	if (!isMounted || !queryClient) return null;
+	const isClient = useIsClient();
+
+	if (!queryClient || !isClient) return null;
 
 	return (
 		<QueryClientProvider client={queryClient}>

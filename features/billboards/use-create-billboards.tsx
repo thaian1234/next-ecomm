@@ -1,11 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
-import React from "react";
 import toast from "react-hot-toast";
 
 export function useCreateBillboards() {
 	const params = useParams();
+	const router = useRouter();
 
 	const { mutate: createBillboard, isPending: isCreating } = useMutation({
 		mutationFn: async (data: { imageUrl: string; label: string }) => {
@@ -13,6 +13,10 @@ export function useCreateBillboards() {
 		},
 		onError: () => {
 			toast.error("Cannot create billboard");
+		},
+		onSuccess: () => {
+			router.push(`/${params.storeId}/billboards`);
+			router.refresh();
 		},
 	});
 	return { createBillboard, isCreating };

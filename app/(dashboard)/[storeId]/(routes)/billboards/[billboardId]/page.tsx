@@ -1,7 +1,7 @@
-import prismadb from "@/lib/prismadb";
-import BillboardForm from "./components/billboards-form";
 import { Suspense } from "react";
+import prismadb from "@/lib/prismadb";
 import SkeletonPage from "@/components/skeleton-page";
+import BillboardForm from "./components/billboards-form";
 
 export default async function BillboardPage({
 	params,
@@ -17,12 +17,12 @@ export default async function BillboardPage({
 	});
 
 	return (
-		<Suspense fallback={<SkeletonPage />}>
-			<div className="flex-col">
-				<div className="flex-1 space-y-4 p-8 pt-6">
+		<div className="flex-col">
+			<div className="flex-1 space-y-4 p-8 pt-6">
+				<Suspense fallback={<SkeletonPage />}>
 					<BillboardForm initialData={billboard} />
-				</div>
+				</Suspense>
 			</div>
-		</Suspense>
+		</div>
 	);
 }

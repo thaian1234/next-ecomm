@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import AlertModal from "@/components/modals/alert-modal";
-import ApiAlert from "@/components/ui/api-alert";
-import { Billboard, Store } from "@prisma/client";
+import { Billboard } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,14 +21,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { useParams, useRouter } from "next/navigation";
 import { useOrigin } from "@/hooks/use-origin";
-import { useEditStore } from "@/features/stores/use-edit-stores";
-import { useDeleteStore } from "@/features/stores/use-delete-stores";
 import ImageUpload from "@/components/ui/image-upload";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { useCreateBillboards } from "@/features/billboards/use-create-billboards";
 import { useEditBillboards } from "@/features/billboards/use-edit-billboards";
-import { useDeleteBillboards } from "@/features/billboards/use-delete-store";
+import { useDeleteBillboards } from "@/features/billboards/use-delete-billboards";
 
 const formSchema = z.object({
 	label: z.string().min(1),
@@ -44,12 +40,12 @@ interface BillboardFormProps {
 
 export default function BillboardForm({ initialData }: BillboardFormProps) {
 	const params = useParams();
-	const router = useRouter();
-	const origin = useOrigin();
+	const [open, setOpen] = useState(false);
+
 	const { createBillboard, isCreating } = useCreateBillboards();
 	const { editBillboards, isEditing } = useEditBillboards();
 	const { deleteBillboards, isDeleting } = useDeleteBillboards();
-	const [open, setOpen] = useState(false);
+
 	const isLoading = isCreating || isEditing || isDeleting;
 
 	const title = initialData ? "Edit billboard" : "Create billboard";
@@ -75,16 +71,14 @@ export default function BillboardForm({ initialData }: BillboardFormProps) {
 		} else {
 			createBillboard(data);
 		}
-		router.refresh();
-		router.push(`/${params.storeId}/billboards`);
 		toast.success(toastMessage);
 	};
 
-	const onDelete = async () => {
+	const onDelete = () => {
 		// try {
 		// 	setIsLoading(true);
-		// 	await axios.delete(
-		// 		`/api/${params.storeId}/billboards/${params.billboardId}`
+		// await axios.delete(
+		// 	`/api/${params.storeId}/billboards/${params.billboardId}`
 		// 	);
 		// 	router.refresh();
 		// 	toast.success("Billborad deleted");
@@ -96,7 +90,7 @@ export default function BillboardForm({ initialData }: BillboardFormProps) {
 		// 	setIsLoading(false);
 		// 	setOpen(true);
 		// }
-		deleteBillboards();
+		deleteBillboards(params.billboardId as string);
 		setOpen(true);
 	};
 
@@ -175,12 +169,6 @@ export default function BillboardForm({ initialData }: BillboardFormProps) {
 					</Button>
 				</form>
 			</Form>
-			<Separator />
-			{/* <ApiAlert
-				title="NEXT_PUBLIC_API_URL"
-				description={`${origin}/api/${params.storeId}`}
-				variant="public"
-			/> */}
 		</>
 	);
 }

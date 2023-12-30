@@ -8,8 +8,10 @@ export const useDeleteBillboards = () => {
 	const params = useParams();
 
 	const { mutate: deleteBillboards, isPending: isDeleting } = useMutation({
-		mutationFn: async () => {
-			return await axios.delete(`/api/Billboardss/${params.BillboardsId}`);
+		mutationFn: async (billboardId: string) => {
+			return await axios.delete(
+				`/api/${params.storeId}/billboards/${billboardId}`
+			);
 		},
 		onError: () => {
 			toast.error(
@@ -17,9 +19,9 @@ export const useDeleteBillboards = () => {
 			);
 		},
 		onSuccess: () => {
-			toast.success("Billboards deleted");
-			routers.push("/");
+			routers.push(`/${params.storeId}/billboards`);
 			routers.refresh();
+			toast.success("Billboards deleted");
 		},
 	});
 

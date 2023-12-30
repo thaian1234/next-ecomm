@@ -44,6 +44,7 @@ export default function StoreSwitcher({
 	const storeModal = useStoreModal();
 	const params = useParams();
 	const router = useRouter();
+	const [isOpen, setIsOpen] = useState(false);
 
 	const formattedItems = items.map((item) => ({
 		label: item.name,
@@ -53,8 +54,6 @@ export default function StoreSwitcher({
 	const currentStore = formattedItems.find(
 		(item) => item.value === params.storeId
 	);
-
-	const [isOpen, setIsOpen] = useState(false);
 
 	const onStoreSelect = (store: { value: string; label: string }) => {
 		setIsOpen(false);

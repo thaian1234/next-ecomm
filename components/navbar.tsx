@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 
 import { UserButton, auth } from "@clerk/nextjs";
 import { MainNav } from "@/components/main-nav";

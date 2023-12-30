@@ -1,5 +1,6 @@
+import { Loader } from "@/components/ui/loader";
 import prismadb from "@/lib/prismadb";
-import React from "react";
+import React, { Suspense } from "react";
 
 interface DashboardPageProps {
 	params: {

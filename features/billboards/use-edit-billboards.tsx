@@ -4,7 +4,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 export const useEditBillboards = () => {
-	const routers = useRouter();
+	const router = useRouter();
 	const params = useParams();
 
 	const { mutate: editBillboards, isPending: isEditing } = useMutation({
@@ -16,6 +16,10 @@ export const useEditBillboards = () => {
 		},
 		onError: () => {
 			toast.error("Cannot edit Billboards");
+		},
+		onSuccess: () => {
+			router.push(`/${params.storeId}/billboards`);
+			router.refresh();
 		},
 	});
 

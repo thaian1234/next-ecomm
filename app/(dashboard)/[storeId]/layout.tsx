@@ -3,6 +3,7 @@ import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import React, { ReactNode, Suspense } from "react";
+import { Loader } from "@/components/ui/loader";
 
 export default async function DashBoardLayout({
 	children,
