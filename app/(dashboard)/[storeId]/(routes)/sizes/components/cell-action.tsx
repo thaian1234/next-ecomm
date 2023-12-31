@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 
@@ -14,7 +14,6 @@ import {
 import { Button } from "@/components/ui/button";
 import AlertModal from "@/components/modals/alert-modal";
 import { useParams, useRouter } from "next/navigation";
-import { useStoreModal } from "@/hooks/use-store-modal";
 import { Separator } from "@/components/ui/separator";
 import { useDeleteSizes } from "@/features/sizes/use-delete-sizes";
 
@@ -27,8 +26,7 @@ export function CellAction({ data }: CellActionProps) {
 	const params = useParams();
 	const { deleteSizes, isDeleting } = useDeleteSizes();
 
-	// const [isOpen, setIsOpen] = useState(false);
-	const { isOpen, onClose, onOpen } = useStoreModal((state) => state);
+	const [isOpen, setIsOpen] = useState(false);
 
 	function onCopy(id: string) {
 		navigator.clipboard.writeText(id);
@@ -36,15 +34,14 @@ export function CellAction({ data }: CellActionProps) {
 	}
 	function onDelete(id: string) {
 		deleteSizes(id);
-		// setIsOpen(false);
-		onClose();
+		setIsOpen(false);
 	}
 
 	return (
 		<>
 			<AlertModal
 				isOpen={isOpen}
-				onClose={onClose}
+				onClose={() => setIsOpen(false)}
 				onConfirm={() => onDelete(data.id)}
 				isLoading={isDeleting}
 			/>
@@ -67,16 +64,17 @@ export function CellAction({ data }: CellActionProps) {
 					</DropdownMenuItem>
 					<DropdownMenuItem
 						onClick={() =>
-							router.push(
-								`/${params.storeId}/sizes/${data.id}`
-							)
+							router.push(`/${params.storeId}/sizes/${data.id}`)
 						}
 						disabled={isDeleting}
 					>
 						<Edit className="mr-2 size-4" />
 						Update
 					</DropdownMenuItem>
-					<DropdownMenuItem onClick={onOpen} disabled={isDeleting}>
+					<DropdownMenuItem
+						onClick={() => setIsOpen(true)}
+						disabled={isDeleting}
+					>
 						<Trash className="mr-2 size-4" />
 						Delete
 					</DropdownMenuItem>

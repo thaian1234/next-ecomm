@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 
-import { BillboardColumn } from "./columns";
+import { ColorColumn } from "./columns";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -14,26 +14,26 @@ import {
 import { Button } from "@/components/ui/button";
 import AlertModal from "@/components/modals/alert-modal";
 import { useParams, useRouter } from "next/navigation";
-import { useDeleteBillboards } from "@/features/billboards/use-delete-billboards";
 import { Separator } from "@/components/ui/separator";
+import { useDeleteColors } from "@/features/colors/use-delete-colors";
 
 interface CellActionProps {
-	data: BillboardColumn;
+	data: ColorColumn;
 }
 
 export function CellAction({ data }: CellActionProps) {
 	const router = useRouter();
 	const params = useParams();
-	const { deleteBillboards, isDeleting } = useDeleteBillboards();
+	const { deleteColors, isDeleting } = useDeleteColors();
 
 	const [isOpen, setIsOpen] = useState(false);
 
 	function onCopy(id: string) {
 		navigator.clipboard.writeText(id);
-		toast.success("Billboard ID copied to the clipboard.");
+		toast.success("Color ID copied to the clipboard.");
 	}
 	function onDelete(id: string) {
-		deleteBillboards(id);
+		deleteColors(id);
 		setIsOpen(false);
 	}
 
@@ -64,9 +64,7 @@ export function CellAction({ data }: CellActionProps) {
 					</DropdownMenuItem>
 					<DropdownMenuItem
 						onClick={() =>
-							router.push(
-								`/${params.storeId}/billboards/${data.id}`
-							)
+							router.push(`/${params.storeId}/colors/${data.id}`)
 						}
 						disabled={isDeleting}
 					>

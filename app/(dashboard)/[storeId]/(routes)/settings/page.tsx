@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import SettingsForm from "./components/settings-form";
 import { Skeleton } from "@/components/ui/skeleton";
 import SkeletonPage from "@/components/skeleton-page";
+import { Loader } from "@/components/ui/loader";
 
 interface SettingPageProps {
 	params: {
@@ -30,7 +31,9 @@ export default async function SettingPage({ params }: SettingPageProps) {
 	return (
 		<div className="flex-col">
 			<div className="flex-1 p-8 pt-6 space-y-4">
-				<SettingsForm initialData={store} />
+				<Suspense fallback={<Loader />}>
+					<SettingsForm initialData={store} />
+				</Suspense>
 			</div>
 		</div>
 	);

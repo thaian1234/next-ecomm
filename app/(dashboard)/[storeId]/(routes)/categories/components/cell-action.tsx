@@ -14,7 +14,6 @@ import {
 import { Button } from "@/components/ui/button";
 import AlertModal from "@/components/modals/alert-modal";
 import { useParams, useRouter } from "next/navigation";
-import { useStoreModal } from "@/hooks/use-store-modal";
 import { Separator } from "@/components/ui/separator";
 import { useDeleteCategories } from "@/features/categories/use-delete-categories";
 
@@ -27,8 +26,7 @@ export function CellAction({ data }: CellActionProps) {
 	const params = useParams();
 	const { deleteCategories, isDeleting } = useDeleteCategories();
 
-	// const [isOpen, setIsOpen] = useState(false);
-	const { isOpen, onClose, onOpen } = useStoreModal((state) => state);
+	const [isOpen, setIsOpen] = useState(false);
 
 	function onCopy(id: string) {
 		navigator.clipboard.writeText(id);
@@ -36,15 +34,14 @@ export function CellAction({ data }: CellActionProps) {
 	}
 	function onDelete(id: string) {
 		deleteCategories(id);
-		// setIsOpen(false);
-		onClose();
+		setIsOpen(false);
 	}
 
 	return (
 		<>
 			<AlertModal
 				isOpen={isOpen}
-				onClose={onClose}
+				onClose={() => setIsOpen(false)}
 				onConfirm={() => onDelete(data.id)}
 				isLoading={isDeleting}
 			/>
@@ -76,7 +73,10 @@ export function CellAction({ data }: CellActionProps) {
 						<Edit className="mr-2 size-4" />
 						Update
 					</DropdownMenuItem>
-					<DropdownMenuItem onClick={onOpen} disabled={isDeleting}>
+					<DropdownMenuItem
+						onClick={() => setIsOpen(true)}
+						disabled={isDeleting}
+					>
 						<Trash className="mr-2 size-4" />
 						Delete
 					</DropdownMenuItem>

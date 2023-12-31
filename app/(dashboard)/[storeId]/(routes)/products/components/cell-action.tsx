@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 
-import { BillboardColumn } from "./columns";
+import { ProductColumn } from "./columns";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -14,26 +14,26 @@ import {
 import { Button } from "@/components/ui/button";
 import AlertModal from "@/components/modals/alert-modal";
 import { useParams, useRouter } from "next/navigation";
-import { useDeleteBillboards } from "@/features/billboards/use-delete-billboards";
 import { Separator } from "@/components/ui/separator";
+import { useDeleteProducts } from "@/features/products/use-delete-products";
 
 interface CellActionProps {
-	data: BillboardColumn;
+	data: ProductColumn;
 }
 
 export function CellAction({ data }: CellActionProps) {
 	const router = useRouter();
 	const params = useParams();
-	const { deleteBillboards, isDeleting } = useDeleteBillboards();
+	const { deleteProducts, isDeleting } = useDeleteProducts();
 
 	const [isOpen, setIsOpen] = useState(false);
 
 	function onCopy(id: string) {
 		navigator.clipboard.writeText(id);
-		toast.success("Billboard ID copied to the clipboard.");
+		toast.success("Product ID copied to the clipboard.");
 	}
 	function onDelete(id: string) {
-		deleteBillboards(id);
+		deleteProducts(id);
 		setIsOpen(false);
 	}
 
@@ -65,7 +65,7 @@ export function CellAction({ data }: CellActionProps) {
 					<DropdownMenuItem
 						onClick={() =>
 							router.push(
-								`/${params.storeId}/billboards/${data.id}`
+								`/${params.storeId}/products/${data.id}`
 							)
 						}
 						disabled={isDeleting}
