@@ -11,10 +11,12 @@ export async function GET(
 			return new NextResponse("Category ID is required", {
 				status: 400,
 			});
-
 		const category = await prismadb.category.findUnique({
 			where: {
 				id: params.categoryId,
+			},
+			include: {
+				billboard: true,
 			},
 		});
 
@@ -39,11 +41,12 @@ export async function PATCH(
 		if (!userId)
 			return new NextResponse("Unauthenticated", { status: 401 });
 
-		if (!name)
-			return new NextResponse("Name is required", { status: 400 });
+		if (!name) return new NextResponse("Name is required", { status: 400 });
 
 		if (!billboardId)
-			return new NextResponse("Billboard ID URL is required", { status: 400 });
+			return new NextResponse("Billboard ID URL is required", {
+				status: 400,
+			});
 
 		if (!params.categoryId)
 			return new NextResponse("Store ID is required", { status: 400 });

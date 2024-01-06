@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 export const ModalProvider = () => {
 	const isClient = useIsClient();
+	if (!isClient) return null;
 	// const [isMounted, setIsMounted] = useState(false);
 
 	// useEffect(() => {

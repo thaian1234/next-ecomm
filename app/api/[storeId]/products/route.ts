@@ -137,7 +137,6 @@ export async function GET(
 				createdAt: "desc",
 			},
 		});
-
 		return NextResponse.json(products);
 	} catch (error) {
 		console.log("[PRODUCTS_GET]", error);

@@ -6,6 +6,7 @@ import { ToasterProvider } from "@/providers/toast-provider";
 
 import "./globals.css";
 import ReactQueryProvider from "@/providers/react-query-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,9 +25,15 @@ export default function RootLayout({
 			<html lang="en">
 				<body className={inter.className}>
 					<ReactQueryProvider>
-						<ToasterProvider />
-						<ModalProvider />
-						{children}
+						<ThemeProvider
+							attribute="class"
+							defaultTheme="system"
+							enableSystem
+						>
+							<ToasterProvider />
+							<ModalProvider />
+							{children}
+						</ThemeProvider>
 					</ReactQueryProvider>
 				</body>
 			</html>
